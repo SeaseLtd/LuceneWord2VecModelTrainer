@@ -16,17 +16,16 @@ import java.io.IOException;
 
 
 @Slf4j
-public class Main {
-
+public class ModelGenerator {
     public static void main(String[] args) throws IOException {
         Config config = parseConfiguration(args);
 
         SentenceIterator iter = new FieldValuesSentenceIterator(config);
-        while (iter.hasNext()) {
-            log.info(iter.nextSentence());
-        }
-
-        iter.reset();
+//        while (iter.hasNext()) {
+//            log.info(iter.nextSentence());
+//        }
+//
+//        iter.reset();
 
         Word2Vec vec = new Word2Vec.Builder()
                 .layerSize(100)

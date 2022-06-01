@@ -20,14 +20,18 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-    implementation group: 'org.deeplearning4j', name: 'deeplearning4j-nlp', version: '0.9.1'
-    implementation group: 'org.apache.lucene', name: 'lucene-core', version: '8.11.0'
+    implementation group: 'org.deeplearning4j', name: 'deeplearning4j-nlp', version: '1.0.0-M2'
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-M2'
+    implementation group: 'org.nd4j', name: 'nd4j-native-platform', version: '1.0.0-M2'
+
+    implementation group: 'org.apache.lucene', name: 'lucene-core', version: '9.2.0'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
 }
 
 test {
@@ -36,6 +40,6 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'io.sease.tools.word2vec.Main'
+        attributes 'Main-Class': 'io.sease.tools.word2vec.ModelGenerator'
     }
 }
