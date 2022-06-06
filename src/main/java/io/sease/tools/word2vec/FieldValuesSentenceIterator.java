@@ -65,4 +65,8 @@ public class FieldValuesSentenceIterator implements SentenceIterator {
     public void setPreProcessor(SentencePreProcessor preProcessor) {
 
     }
+
+    public int getNumDocs(){
+        return reader.numDocs();
+    }
 }

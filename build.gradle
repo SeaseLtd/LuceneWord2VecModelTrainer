@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'io.sease.tools.word2vec'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -40,6 +40,10 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'io.sease.tools.word2vec.ModelGenerator'
+        attributes 'Main-Class': 'io.sease.tools.word2vec.ModelTrainer'
     }
+}
+
+shadowJar {
+    archiveFileName = "LuceneWord2VecModelTrainer.jar"
 }

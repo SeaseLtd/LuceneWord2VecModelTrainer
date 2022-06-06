@@ -10,31 +10,33 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
-import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
 
 import java.io.IOException;
 
 
 @Slf4j
-public class ModelGenerator {
+public class ModelTrainer {
     public static void main(String[] args) throws IOException {
+        long startTime, elapsedTime;
+
         Config config = parseConfiguration(args);
 
-        SentenceIterator iter = new FieldValuesSentenceIterator(config);
-//        while (iter.hasNext()) {
-//            log.info(iter.nextSentence());
-//        }
-//
-//        iter.reset();
+        FieldValuesSentenceIterator iterator = new FieldValuesSentenceIterator(config);
 
+        startTime = System.currentTimeMillis();
         Word2Vec vec = new Word2Vec.Builder()
                 .layerSize(100)
+                .minWordFrequency(50)
                 .windowSize(5)
-                .iterate(iter)
+                .seed(42)
+                .iterate(iterator)
                 .build();
         vec.fit();
+        elapsedTime = (System.currentTimeMillis() - startTime) / 60000;
+        log.info("Model trainded in {} min", elapsedTime);
 
         WordVectorSerializer.writeWord2VecModel(vec, config.getModelFilePath());
+        log.info("Model file {} generated", config.getModelFilePath());
     }
 
     private static Config parseConfiguration(String[] args){
