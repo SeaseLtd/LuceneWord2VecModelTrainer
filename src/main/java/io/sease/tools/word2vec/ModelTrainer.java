@@ -33,7 +33,7 @@ public class ModelTrainer {
                 .build();
         vec.fit();
         elapsedTime = (System.currentTimeMillis() - startTime) / 60000;
-        log.info("Model trainded in {} min", elapsedTime);
+        log.info("Model trained in {} min", elapsedTime);
 
         WordVectorSerializer.writeWord2VecModel(vec, config.getModelFilePath());
         log.info("Model file {} generated", config.getModelFilePath());
