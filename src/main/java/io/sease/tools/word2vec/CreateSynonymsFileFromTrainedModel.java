@@ -9,15 +9,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import java.util.HashSet;
 
 @Slf4j
 public class CreateSynonymsFileFromTrainedModel {
 
-    private static List<String> WORD_SYNONYMS_LIST = new ArrayList<>();
+    private static HashSet<String> WORD_SYNONYMS_LIST = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
-
         log.info("Read a word2vec trained model from file");
         long startTime = System.currentTimeMillis();
         Word2Vec word2Vec = WordVectorSerializer.readWord2VecModel("wiki-ita-w2v-model.zip");
@@ -26,14 +25,17 @@ public class CreateSynonymsFileFromTrainedModel {
 
         log.info("Extract synonyms for each word in the vocabulary");
         int i = 0;
+        //Collection<String> vocabWords = word2Vec.getVocab().words();
         for(String word : word2Vec.getVocab().words()){
-            String synonymFileRow = extractNearestWords(word2Vec, word, 0.8);
-            WORD_SYNONYMS_LIST.add(synonymFileRow);
-            log.info("Extracted synonyms for word {}", i++);
+            String synonymFileRow = extractNearestWords(word2Vec, word, 0.7);
+            if (!synonymFileRow.isEmpty()) {
+                WORD_SYNONYMS_LIST.add(synonymFileRow);
+                log.info("Extracted synonyms for word {}", i++);
+            }
         }
 
         log.info("Write synonyms to a .txt file");
-        FileWriter writer = new FileWriter("synonyms.txt");
+        FileWriter writer = new FileWriter("synonyms_expand.txt");
         for(String synonymRow: WORD_SYNONYMS_LIST) {
             if (!synonymRow.isEmpty())
                 writer.write(synonymRow + System.lineSeparator());
@@ -47,18 +49,19 @@ public class CreateSynonymsFileFromTrainedModel {
         List<String> synonymList = new ArrayList<>();
 
         long startTime = System.currentTimeMillis();
-        Collection<String> lst = vec.wordsNearest(word, 5);
+        Collection<String> lst = vec.wordsNearest(word, 10);
         for (String synonym : lst) {
             double similarity = vec.similarity(word, synonym);
             if (similarity >= accuracy)
                 synonymList.add(synonym);
         }
-        if (!synonymList.isEmpty())
+        if (!synonymList.isEmpty()) {
             synonymList.add(0, word);
-        String synonymListCommaSeparated = String.join(",", synonymList);
+            //Collections.sort(synonymList, Collator.getInstance(Locale.ENGLISH));
+            long estimatedTime = System.currentTimeMillis() - startTime;
+            log.info("{} Synonyms for '{}' extracted in {} ms", (synonymList.size()-1), word, estimatedTime);
+        }
 
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        log.info("Synonyms for {} extracted in {} ms", word, estimatedTime);
-        return synonymListCommaSeparated;
+        return String.join(",", synonymList);
     }
 }
